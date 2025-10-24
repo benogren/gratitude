@@ -11,7 +11,10 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div
+      className="flex min-h-screen items-center justify-center p-4"
+      style={{ background: 'var(--gradient-primary)' }}
+    >
       <LoginForm />
     </div>
   )

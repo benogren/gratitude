@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { CurrentUserAvatar } from '@/components/current-user-avatar'
 import { DeleteAccountDialog } from '@/components/delete-account-dialog'
 import { SettingsLogoutButton } from '@/components/settings-logout-button'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -117,6 +118,19 @@ export default async function SettingsPage() {
                     <span className="text-muted-foreground">Not synced</span>
                   )}
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>Customize how the app looks</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Label>Theme</Label>
+                <ThemeToggle />
               </div>
             </CardContent>
           </Card>

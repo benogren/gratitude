@@ -57,14 +57,14 @@ export function DeleteAccountDialog({ userId }: DeleteAccountDialogProps) {
           </div>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel className='border bg-background shadow-xs hover:bg-primary-100 dark:bg-input/30 dark:border-input dark:hover:bg-input/50' disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
               e.preventDefault()
               handleDelete()
             }}
             disabled={isDeleting}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="bg-primary-500 text-primary-foreground hover:bg-primary-800"
           >
             {isDeleting ? 'Deleting...' : 'Delete Account'}
           </AlertDialogAction>

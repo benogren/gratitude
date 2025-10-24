@@ -16,6 +16,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Mail } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export function SignupForm() {
   const [email, setEmail] = useState('')
@@ -48,6 +49,10 @@ export function SignupForm() {
         setError(error.message)
       } else {
         setSuccess(true)
+        toast.success('Account created successfully!', {
+          description: `We've sent a confirmation email to ${email}. Please check your inbox and verify your account.`,
+          duration: 10000,
+        })
       }
     } catch (err) {
       setError('An unexpected error occurred')
@@ -57,32 +62,42 @@ export function SignupForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <>
+    {success && (
+      <Card className="w-full max-w-md">
+        <CardContent className='text-center'>
+          <h1 className='text-xl mb-4'>Thanks for signing up!</h1>
+          <p>
+          We&apos;ve sent you a confirmation link to <strong>{email}</strong>.
+          Please check your inbox and click the link to verify your account.
+          </p>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-4">
+          <p className="text-sm text-muted-foreground text-center">
+            Already have an account?{' '}
+            <Link href="/login" className="text-primary hover:underline">
+              Login
+            </Link>
+          </p>
+        </CardFooter>
+    </Card>
+    )}
+    {!success && (
+      <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
+        <CardTitle className='text-3xl text-primary-500'><h1>Sign Up</h1></CardTitle>
         <CardDescription>
           Create a new account to get started
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSignup}>
         <CardContent className="space-y-4">
-          {success && (
-            <Alert variant="success">
-              <Mail className="h-4 w-4" />
-              <AlertTitle>Check your email</AlertTitle>
-              <AlertDescription>
-                We&apos;ve sent you a confirmation link to <strong>{email}</strong>.
-                Please check your inbox and click the link to verify your account.
-              </AlertDescription>
-            </Alert>
-          )}
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          {!success && (
-            <>
+          
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
             <Input
@@ -121,15 +136,11 @@ export function SignupForm() {
               className='mb-6'
             />
           </div>
-            </>
-          )}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          {!success && (
-            <Button type="submit" className="w-full" disabled={loading || success}>
+          <Button type="submit" className="w-full" disabled={loading || success}>
             {loading ? 'Creating account...' : 'Sign Up'}
           </Button>
-          )}
           <p className="text-sm text-muted-foreground text-center">
             Already have an account?{' '}
             <Link href="/login" className="text-primary hover:underline">
@@ -139,5 +150,7 @@ export function SignupForm() {
         </CardFooter>
       </form>
     </Card>
+    )}
+    </>
   )
 }
