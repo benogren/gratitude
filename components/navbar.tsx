@@ -26,7 +26,20 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/home" className="flex items-center">
-              <h1 className="text-xl font-semibold">Gratitude</h1>
+              <h1 className="text-xl font-semibold text-primary-600">
+                <span 
+                  className='italic'
+                  style={{
+                      background: 'var(--gradient-primary)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}
+                >
+                  My&nbsp;
+                </span>
+                Gratitude Journal
+              </h1>
             </Link>
           </div>
           <div className="flex items-center">

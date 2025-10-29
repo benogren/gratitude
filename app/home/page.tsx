@@ -64,6 +64,7 @@ export default async function HomePage() {
               currentStreak={streakData.streak.currentStreak}
               longestStreak={streakData.streak.longestStreak}
               totalEntries={streakData.streak.totalEntries}
+              weeklyData={streakData.streak.weeklyData}
             />
             <ConversationStatsCard
               totalConversations={conversationData.stats.totalConversations}

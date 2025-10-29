@@ -26,7 +26,7 @@ export function RecentSummariesCard({ recentSummaries }: RecentSummariesCardProp
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <BookOpen className="h-6 w-6 text-purple-500" />
+          <BookOpen className="h-6 w-6" style={{ color: 'var(--secondary-500)' }} />
           <CardTitle>Recent Journal Entries</CardTitle>
         </div>
         <CardDescription>

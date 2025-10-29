@@ -45,7 +45,7 @@ export function ConversationStatsCard({
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <MessageSquare className="h-6 w-6 text-blue-500" />
+          <MessageSquare className="h-6 w-6" style={{ color: 'var(--secondary-500)' }} />
           <CardTitle>Conversation Insights</CardTitle>
         </div>
         <CardDescription>
@@ -57,7 +57,7 @@ export function ConversationStatsCard({
           {/* Total Time */}
           <div className="flex flex-col items-center justify-center rounded-lg border bg-muted/50 p-6">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-5 w-5 text-blue-500" />
+              <Clock className="h-5 w-5" style={{ color: 'var(--secondary-500)' }} />
               <div className="text-3xl font-bold">
                 {formatTotalDuration(totalDuration)}
               </div>

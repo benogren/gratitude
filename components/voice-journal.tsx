@@ -9,6 +9,7 @@ import { Button } from './ui/button'
 import { Alert, AlertDescription } from './ui/alert'
 import { Orb, type AgentState } from './ui/orb'
 import { Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton } from './ui/conversation'
+import { Spinner } from './ui/spinner'
 
 interface VoiceJournalProps {
   userName: string
@@ -218,21 +219,27 @@ export function VoiceJournal({ userName, autoStart = false }: VoiceJournalProps)
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Mindfulness Voice Journal</CardTitle>
-          <CardDescription>
-            Talk with your AI mindfulness coach about what you&apos;re grateful for today
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {saveMessage && (
-            <Alert variant={saveMessage.type === 'error' ? 'destructive' : 'success'}>
-              <AlertDescription>{saveMessage.text}</AlertDescription>
-            </Alert>
-          )}
+      {conversation.status === 'connected' ? (
+        <>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">Voice Journal</h1>
+          <p className="text-muted-foreground">Reflect on your day with your AI mindfulness coach</p>
+        </div>
 
-          {conversation.status === 'connected' ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Mindfulness Voice Journal</CardTitle>
+            <CardDescription>
+              Talk with your AI mindfulness coach about what you&apos;re grateful for today
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {saveMessage && (
+              <Alert variant={saveMessage.type === 'error' ? 'destructive' : 'success'}>
+                <AlertDescription>{saveMessage.text}</AlertDescription>
+              </Alert>
+            )}
+
             <div className="grid md:grid-cols-2 gap-6">
               {/* Left Column - Orb */}
               <div className="flex flex-col items-center gap-4">
@@ -296,66 +303,44 @@ export function VoiceJournal({ userName, autoStart = false }: VoiceJournalProps)
                 </Card>
               </div>
             </div>
-          ) : (
-            <div className="flex flex-col items-center gap-4">
-              {/* Show orb even when not connected */}
-              <div className="w-full max-w-md aspect-square relative">
-                <Orb
-                  agentState={agentState}
-                  getInputVolume={conversation.getInputVolume}
-                  getOutputVolume={conversation.getOutputVolume}
-                  colors={["#CADCFC", "#8BA5D8"]}
-                />
-              </div>
-              {!autoStart && (
-                <Button
-                  onClick={async () => {
-                    const connectionType = 'websocket' as const
-                    const conversationId = await conversation.startSession({
-                      agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || '',
-                      connectionType,
-                      dynamicVariables: {
-                        user_name: userName
-                      }
-                    })
-                    const startTime = new Date().toISOString()
-                    setConversationMetadata({
-                      conversationId,
-                      startTime,
-                      endTime: null,
-                      messageCount: 0,
-                      connectionType,
-                      duration: null,
-                    })
-                  }}
-                  size="lg"
-                  className="gap-2 w-full max-w-md"
-                  disabled={!process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID}
-                >
-                  Start Conversation
-                </Button>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        </>
+      ) : (
+        <div className="flex flex-col items-center gap-4">
+          {/* Show spinner when not connected */}
+          <Spinner size="default" />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>About Your Mindfulness Coach</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Your AI coach will guide you through a brief gratitude reflection. They&apos;ll ask you about:
-          </p>
-          <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
-            <li>What you&apos;re grateful for today</li>
-            <li>Positive moments you experienced</li>
-            <li>How you&apos;re feeling</li>
-            <li>What brought you joy</li>
-          </ul>
-        </CardContent>
-      </Card>
+          {!autoStart && (
+            <Button
+              onClick={async () => {
+                const connectionType = 'websocket' as const
+                const conversationId = await conversation.startSession({
+                  agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || '',
+                  connectionType,
+                  dynamicVariables: {
+                    user_name: userName
+                  }
+                })
+                const startTime = new Date().toISOString()
+                setConversationMetadata({
+                  conversationId,
+                  startTime,
+                  endTime: null,
+                  messageCount: 0,
+                  connectionType,
+                  duration: null,
+                })
+              }}
+              size="lg"
+              className="gap-2 w-full max-w-md"
+              disabled={!process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID}
+            >
+              Start Conversation
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

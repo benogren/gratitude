@@ -25,7 +25,7 @@ export function MoodTrackerCard({ recentMoods }: MoodTrackerCardProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Smile className="h-6 w-6 text-yellow-500" />
+          <Smile className="h-6 w-6" style={{ color: 'var(--primary-400)' }} />
           <CardTitle>Mood Tracker</CardTitle>
         </div>
         <CardDescription>

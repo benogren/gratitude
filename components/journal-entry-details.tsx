@@ -1,6 +1,24 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Clock, Heart, Smile, MessageSquare, BookOpen } from 'lucide-react'
+import { Clock, Heart, Smile, MessageSquare, BookOpen, Trash2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
+import { deleteJournalEntry } from '@/app/actions/journal'
 
 interface JournalEntryDetailsProps {
   entry: {
@@ -41,16 +59,63 @@ function formatDateTime(dateString: string): string {
 }
 
 export function JournalEntryDetails({ entry }: JournalEntryDetailsProps) {
+  const router = useRouter()
+  const [isDeleting, setIsDeleting] = useState(false)
   const duration = entry.conversation_metadata?.duration || 0
   const messageCount = entry.conversation_metadata?.messageCount || 0
 
+  const handleDelete = async () => {
+    setIsDeleting(true)
+
+    try {
+      const result = await deleteJournalEntry(entry.id)
+
+      if (result.success) {
+        toast.success('Journal entry deleted')
+        router.push('/home')
+      } else {
+        toast.error(result.error || 'Failed to delete entry')
+        setIsDeleting(false)
+      }
+    } catch (error) {
+      toast.error('Failed to delete entry')
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header with metadata */}
+      {/* Header with metadata and delete button */}
       <Card>
         <CardHeader>
-          <CardTitle>Journal Entry</CardTitle>
-          <CardDescription>{formatDateTime(entry.created_at)}</CardDescription>
+          <div className="flex items-start justify-between">
+            <div>
+              <CardTitle>Journal Entry</CardTitle>
+              <CardDescription>{formatDateTime(entry.created_at)}</CardDescription>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" className="gap-2" disabled={isDeleting}>
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete this journal entry. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                    {isDeleting ? 'Deleting...' : 'Delete'}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
@@ -77,7 +142,7 @@ export function JournalEntryDetails({ entry }: JournalEntryDetailsProps) {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-purple-500" />
+              <BookOpen className="h-5 w-5" style={{ color: 'var(--secondary-500)' }} />
               <CardTitle>Summary</CardTitle>
             </div>
           </CardHeader>
@@ -93,7 +158,7 @@ export function JournalEntryDetails({ entry }: JournalEntryDetailsProps) {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-pink-500" />
+                <Heart className="h-5 w-5" style={{ color: 'var(--accent-500)' }} />
                 <CardTitle>Gratitude</CardTitle>
               </div>
             </CardHeader>
@@ -102,7 +167,12 @@ export function JournalEntryDetails({ entry }: JournalEntryDetailsProps) {
                 {entry.gratitude_items.map((item, index) => (
                   <div
                     key={index}
-                    className="px-3 py-1.5 rounded-full bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-300 text-sm border border-pink-200 dark:border-pink-800"
+                    className="px-3 py-1.5 rounded-full text-sm border"
+                    style={{
+                      backgroundColor: 'var(--accent-50)',
+                      color: 'var(--accent-700)',
+                      borderColor: 'var(--accent-200)'
+                    }}
                   >
                     {item}
                   </div>
@@ -117,7 +187,7 @@ export function JournalEntryDetails({ entry }: JournalEntryDetailsProps) {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Smile className="h-5 w-5 text-yellow-500" />
+                <Smile className="h-5 w-5" style={{ color: 'var(--primary-400)' }} />
                 <CardTitle>Mood</CardTitle>
               </div>
             </CardHeader>

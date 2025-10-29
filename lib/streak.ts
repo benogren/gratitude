@@ -11,6 +11,7 @@ interface StreakData {
   longestStreak: number
   totalEntries: number
   lastEntryDate: string | null
+  weeklyData: boolean[] // Sunday (0) to Saturday (6)
 }
 
 /**
@@ -24,6 +25,7 @@ export function calculateStreak(entries: JournalEntry[]): StreakData {
       longestStreak: 0,
       totalEntries: 0,
       lastEntryDate: null,
+      weeklyData: [false, false, false, false, false, false, false],
     }
   }
 
@@ -92,10 +94,34 @@ export function calculateStreak(entries: JournalEntry[]): StreakData {
   }
   longestStreak = Math.max(longestStreak, tempStreak)
 
+  // Calculate weekly data (which days this week have entries)
+  const weeklyData: boolean[] = [false, false, false, false, false, false, false]
+  const currentDayOfWeek = today.getDay() // 0 = Sunday, 6 = Saturday
+
+  // Get the start of the current week (Sunday)
+  const startOfWeek = new Date(today)
+  startOfWeek.setDate(today.getDate() - currentDayOfWeek)
+  startOfWeek.setHours(0, 0, 0, 0)
+
+  // Get the end of the current week (Saturday)
+  const endOfWeek = new Date(startOfWeek)
+  endOfWeek.setDate(startOfWeek.getDate() + 6)
+  endOfWeek.setHours(23, 59, 59, 999)
+
+  // Check each entry to see if it falls within this week
+  sortedEntries.forEach(entry => {
+    const entryDate = new Date(entry.created_at)
+    if (entryDate >= startOfWeek && entryDate <= endOfWeek) {
+      const dayIndex = entryDate.getDay()
+      weeklyData[dayIndex] = true
+    }
+  })
+
   return {
     currentStreak,
     longestStreak,
     totalEntries: entries.length,
     lastEntryDate: sortedEntries[0].created_at,
+    weeklyData,
   }
 }

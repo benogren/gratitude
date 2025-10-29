@@ -99,6 +99,7 @@ export async function getUserStreak() {
           longestStreak: 0,
           totalEntries: 0,
           lastEntryDate: null,
+          weeklyData: [false, false, false, false, false, false, false],
         }
       }
     }
@@ -120,6 +121,7 @@ export async function getUserStreak() {
           longestStreak: 0,
           totalEntries: 0,
           lastEntryDate: null,
+          weeklyData: [false, false, false, false, false, false, false],
         }
       }
     }
@@ -137,6 +139,7 @@ export async function getUserStreak() {
         longestStreak: 0,
         totalEntries: 0,
         lastEntryDate: null,
+        weeklyData: [false, false, false, false, false, false, false],
       }
     }
   }
@@ -274,6 +277,44 @@ export async function getJournalEntryById(id: string) {
       success: false,
       error: 'Failed to fetch journal entry',
       entry: null,
+    }
+  }
+}
+
+export async function deleteJournalEntry(id: string) {
+  const supabase = await createClient()
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return {
+        success: false,
+        error: 'Not authenticated',
+      }
+    }
+
+    // Delete the entry, ensuring it belongs to the user
+    const { error } = await supabase
+      .from('journal_entries')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      console.error('Error deleting journal entry:', error)
+      return {
+        success: false,
+        error: error.message,
+      }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error in deleteJournalEntry:', error)
+    return {
+      success: false,
+      error: 'Failed to delete journal entry',
     }
   }
 }

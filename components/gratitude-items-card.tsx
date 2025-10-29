@@ -13,7 +13,7 @@ export function GratitudeItemsCard({ recentItems, topItems }: GratitudeItemsCard
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Heart className="h-6 w-6 text-pink-500" />
+          <Heart className="h-6 w-6" style={{ color: 'var(--accent-500)' }} />
           <CardTitle>What You're Grateful For</CardTitle>
         </div>
         <CardDescription>
@@ -35,7 +35,12 @@ export function GratitudeItemsCard({ recentItems, topItems }: GratitudeItemsCard
                   {recentItems.map((item, index) => (
                     <div
                       key={index}
-                      className="px-3 py-1.5 rounded-full bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-300 text-sm border border-pink-200 dark:border-pink-800"
+                      className="px-3 py-1.5 rounded-full text-sm border"
+                      style={{
+                        backgroundColor: 'var(--accent-50)',
+                        color: 'var(--accent-700)',
+                        borderColor: 'var(--accent-200)'
+                      }}
                     >
                       {item}
                     </div>
