@@ -52,6 +52,11 @@ export default async function SettingsPage() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
+                  <Label>Display Name</Label>
+                  <p className="text-sm">{profile?.display_name || 'Not set'}</p>
+                </div>
+
+                <div className="space-y-2">
                   <Label>Full Name</Label>
                   <p className="text-sm">{profile?.full_name || 'Not set'}</p>
                 </div>
